@@ -1,0 +1,18 @@
+/* src/components/Footer/Footer.module.css */
+.footer {
+  background-color: var(--dark);
+  color: white;
+  text-align: center;
+  padding: 2rem;
+  margin-top: auto; /* Pushes footer to bottom if content is short */
+}
+
+.privacyLink {
+  color: var(--accent);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.privacyLink:hover {
+  text-decoration: underline;
+}

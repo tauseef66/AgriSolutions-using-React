@@ -1,0 +1,35 @@
+/* src/components/FeatureCard/FeatureCard.module.css */
+.feature {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  transition: var(--transition);
+  text-align: center;
+  padding: 2rem;
+}
+
+.feature:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.featureImage {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.featureContent h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--primary-dark);
+}
+
+.featureIcon {
+  font-size: 2rem;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
