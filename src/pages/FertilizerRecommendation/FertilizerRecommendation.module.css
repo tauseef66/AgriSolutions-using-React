@@ -158,3 +158,41 @@ button[type="submit"]:disabled {
     font-size: 1.8rem;
   }
 }
+
+
+.resultError {
+  background-color: #ffe6e6;
+  border: 1px solid #ff4d4d;
+  color: #d8000c;
+}
+
+.resultSuccess {
+  background-color: #e6ffe6;
+  border: 1px solid #4CAF50;
+  color: #2e7d32;
+}
+
+.resultRemark {
+  margin-top: 10px;
+  font-style: italic;
+}
+
+.resultConfidence {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.retryButton, .clearButton {
+  margin-top: 15px;
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.retryButton:hover, .clearButton:hover {
+  background-color: #45a049;
+}
