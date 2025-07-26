@@ -94,7 +94,7 @@ export default function YieldPrediction() {
       };
 
       // Make API call
-      const response = await fetch('http://localhost:5000/api/estimate', {
+      const response = await fetch('http://localhost:5000/api/predict', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
