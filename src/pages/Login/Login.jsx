@@ -1,31 +1,52 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
 import styles from './Login.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faLock, faSignInAlt } from '@fortawesome/free-solid-svg-icons'
+import { login, googleLogin } from '../../services/api'
+import { auth, googleProvider } from '../../services/firebase'
+import { signInWithPopup } from 'firebase/auth'
+import { toast } from 'react-toastify'
+import { useAuth } from '../../context/AuthContext'
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { login } = useAuth()
   const navigate = useNavigate()
 
+
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    
-    try {
-      setError('')
-      setLoading(true)
-      await login(email, password)
-      navigate('/dashboard')
-    } catch (err) {
-      setError('Failed to log in: ' + err.message)
-    }
+  e.preventDefault()
+  setError('')
+  setLoading(true)
+  try {
+    const { token } = await login(email, password)
+    localStorage.setItem('token', token)
+    toast.success('Login successful!')
+    setLoading(false)
+    window.location.href = '/dashboard'//force to dashboard 
+  } catch (err) {
+    setError(err.response?.data?.message || 'Login failed')
     setLoading(false)
   }
+}
+
+const { setCurrentUser } = useAuth() 
+
+const handleGoogleSignIn = async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider)
+    const idToken = await result.user.getIdToken()
+    const { token } = await googleLogin(idToken)
+    localStorage.setItem('token', token)
+    setCurrentUser({ token }) 
+    navigate('/dashboard')
+  } catch (err) {
+    toast.error('Google login failed')
+  }
+}
 
   return (
     <div className={styles.loginContainer}>
@@ -68,6 +89,10 @@ export default function Login() {
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
+
+        <button onClick={handleGoogleSignIn} className={styles.loginButton}>
+          Login with Google
+        </button>
 
         <div className={styles.links}>
           <Link to="/forgot-password">Forgot Password?</Link>

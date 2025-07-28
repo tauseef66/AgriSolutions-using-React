@@ -1,4 +1,3 @@
-// src/pages/Dashboard/Dashboard.jsx
 import styles from './Dashboard.module.css'
 import DashboardCard from '../../components/DashboardCard/DashboardCard'
 import { faSeedling, faFlask, faChartLine } from '@fortawesome/free-solid-svg-icons'

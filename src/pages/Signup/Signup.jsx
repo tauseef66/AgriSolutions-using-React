@@ -1,17 +1,12 @@
-// src/pages/Signup/Signup.jsx
-
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
 import styles from './Signup.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { 
-  faUser, 
-  faLock, 
-  faEnvelope, 
-  faUserPlus,
-  faIdCard
-} from '@fortawesome/free-solid-svg-icons'
+import { faUser, faLock, faEnvelope, faUserPlus, faIdCard } from '@fortawesome/free-solid-svg-icons'
+import { signup, googleLogin } from '../../services/api'
+import { auth, googleProvider } from '../../services/firebase'
+import { signInWithPopup } from 'firebase/auth'
+import { toast } from 'react-toastify'
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -22,7 +17,6 @@ export default function Signup() {
   })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { signup } = useAuth()
   const navigate = useNavigate()
 
   const handleChange = (e) => {
@@ -35,8 +29,7 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
-    // Validation
+
     if (formData.password !== formData.confirmPassword) {
       return setError("Passwords don't match")
     }
@@ -44,17 +37,33 @@ export default function Signup() {
       return setError("Password should be at least 6 characters")
     }
 
+    setError('')
+    setLoading(true)
     try {
-      setError('')
-      setLoading(true)
-      // Replace with actual signup logic
-      await signup(formData.email, formData.password)
+      const { token } = await signup(formData.name, formData.email, formData.password)
+      localStorage.setItem('token', token)
+      toast.success('Signup successful!')
       navigate('/dashboard')
     } catch (err) {
-      setError(err.message || 'Failed to create account')
+      setError(err.response?.data?.message || 'Signup failed')
     }
     setLoading(false)
   }
+
+const handleGoogleSignIn = async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider)
+    const idToken = await result.user.getIdToken()
+    const { token } = await googleLogin(idToken)
+    localStorage.setItem('token', token)
+    setCurrentUser({ token }) 
+    toast.success('Google login successful!')
+    navigate('/dashboard')
+  } catch (err) {
+    toast.error(err.response?.data?.message || 'Google login failed')
+  }
+}
+
 
   return (
     <div className={styles.signupContainer}>
@@ -109,7 +118,6 @@ export default function Signup() {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Create a password (min 6 chars)"
-                minLength="6"
               />
             </div>
           </div>
@@ -141,6 +149,10 @@ export default function Signup() {
             )}
           </button>
         </form>
+
+        <button onClick={handleGoogleSignIn} className={styles.signupButton}>
+          Sign Up with Google
+        </button>
 
         <div className={styles.loginRedirect}>
           Already have an account? <Link to="/login">Log In</Link>

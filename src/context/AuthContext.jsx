@@ -1,56 +1,68 @@
-// src/context/AuthContext.jsx
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
+import { login as apiLogin, signup as apiSignup } from '../services/api'
 
-// 1. Create context with proper default value
 const AuthContext = createContext({
   currentUser: null,
-  login: () => {},
-  signup: () => {},
-  logout: () => {}
+  login: async () => {},
+  signup: async () => {},
+  logout: () => {},
+  isAuthenticated: false,
+  setCurrentUser: () => {},
+  loading: true
 })
 
-// 2. Create provider component
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+
+    if (token) {
+      setCurrentUser({ token }) 
+    } else {
+      setCurrentUser(null)
+    }
+
+    setLoading(false)
+  }, [])
 
   const login = async (email, password) => {
-    try {
-      // Replace with actual auth logic
-      setCurrentUser({ email })
-      return true
-    } catch (error) {
-      console.error("Login failed:", error)
-      return false
-    }
+    const { token } = await apiLogin(email, password)
+    localStorage.setItem('token', token)
+    setCurrentUser({ token })
+    return true
   }
 
-  const signup = async (email, password) => {
-    try {
-      // Replace with actual auth logic
-      setCurrentUser({ email })
-      return true
-    } catch (error) {
-      console.error("Signup failed:", error)
-      return false
-    }
+  const signup = async (name, email, password) => {
+    const { token } = await apiSignup(name, email, password)
+    localStorage.setItem('token', token)
+    setCurrentUser({ token })
+    return true
   }
 
   const logout = () => {
+    localStorage.removeItem('token')
     setCurrentUser(null)
   }
 
   return (
-    <AuthContext.Provider value={{ currentUser, login, signup, logout }}>
+    <AuthContext.Provider
+      value={{
+        currentUser,
+        isAuthenticated: !!currentUser,
+        login,
+        signup,
+        logout,
+        loading,
+        setCurrentUser // expose this for Google login
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )
 }
 
-// 3. Custom hook for consuming context
 export function useAuth() {
-  const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
-  return context
+  return useContext(AuthContext)
 }
