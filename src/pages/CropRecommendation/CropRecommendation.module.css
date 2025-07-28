@@ -143,3 +143,34 @@ button[type="submit"]:disabled {
     grid-template-columns: 1fr;
   }
 }
+
+.resultError {
+  background-color: #ffe6e6;
+  border-color: #ff4d4d;
+  color: #cc0000;
+}
+
+.errorIcon {
+  margin-right: 8px;
+  font-size: 1.2em;
+}
+
+.confidenceBar {
+  margin-top: 15px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  height: 20px;
+  overflow: hidden;
+}
+
+.confidenceFill {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.5s ease-in-out;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  color: white;
+  font-size: 0.9em;
+  font-weight: 500;
+}

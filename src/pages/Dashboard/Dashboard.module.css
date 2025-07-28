@@ -1,6 +1,6 @@
 /* src/pages/Dashboard/Dashboard.module.css */
 .dashboard {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 2rem auto;
   padding: 0 2rem;
 }
@@ -11,49 +11,120 @@
   animation: fadeIn 1s ease;
 }
 
-.welcomeSection h2 {
-  font-size: 2.5rem;
+.welcomeSection h1 {
+  font-size: 2.8rem;
   color: var(--primary-dark);
   margin-bottom: 1rem;
+  background: linear-gradient(90deg, #2E7D32, #4CAF50);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-.welcomeSection p {
-  font-size: 1.1rem;
+.subtitle {
+  font-size: 1.2rem;
   max-width: 700px;
   margin: 0 auto;
+  color: #555;
 }
 
 .quickStats {
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 2rem;
   margin-bottom: 3rem;
-  box-shadow: var(--card-shadow);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.5rem;
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
 .statItem {
   text-align: center;
-  padding: 1rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: #f9f9f9;
+}
+
+.statItem:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 .statValue {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   font-weight: 700;
   color: var(--primary);
   margin-bottom: 0.5rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .statLabel {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--text);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.statTrend {
+  font-size: 0.85rem;
+  color: #4CAF50;
+  font-weight: 500;
+}
+
+.chartRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.chartContainer {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.chartContainer h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 1.2rem;
 }
 
 .featuresGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   margin-top: 2rem;
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .chartRow {
+    grid-template-columns: 1fr;
+  }
+  
+  .quickStats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .quickStats {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+
+ 

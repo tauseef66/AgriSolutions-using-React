@@ -1,4 +1,3 @@
-// src/pages/CropRecommendation/CropRecommendation.jsx
 import { useState } from 'react'
 import styles from './CropRecommendation.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -8,7 +7,8 @@ import {
   faTint, 
   faVial, 
   faCloudRain,
-  faSeedling
+  faSeedling,
+  faExclamationTriangle
 } from '@fortawesome/free-solid-svg-icons'
 
 export default function CropRecommendation() {
@@ -23,6 +23,7 @@ export default function CropRecommendation() {
   })
   const [result, setResult] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   const handleChange = (e) => {
     const { id, value } = e.target
@@ -32,24 +33,53 @@ export default function CropRecommendation() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
-    
-    // Simulate API call
-    setTimeout(() => {
-      const crops = [
-        "Rice", "Wheat", "Maize", "Cotton", "Sugarcane",
-        "Soybean", "Potato", "Tomato", "Coffee", "Apple"
-      ]
-      const randomCrop = crops[Math.floor(Math.random() * crops.length)]
-      
-      setResult({
-        crop: randomCrop,
-        message: `Based on your soil and climate conditions, ${randomCrop} would be the most suitable crop for cultivation.`
+    setError(null)
+    setResult(null)
+
+    try {
+      const response = await fetch('http://localhost:5000/api/recommend', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          N: Number(formData.N),
+          P: Number(formData.P),
+          K: Number(formData.K),
+          temperature: Number(formData.temperature),
+          humidity: Number(formData.humidity),
+          ph: Number(formData.ph),
+          rainfall: Number(formData.rainfall)
+        })
       })
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch recommendation')
+      }
+
+      const data = await response.json()
+      const { crop } = data
+
+      if (crop.status === 'success') {
+        setResult({
+          crop: crop.prediction,
+          confidence: crop.confidence,
+          message: `Based on your soil and climate conditions, ${crop.prediction} would be the most suitable crop for cultivation with ${Math.round(crop.confidence * 100)}% confidence.`
+        })
+        
+        // Scroll to result
+        setTimeout(() => {
+          document.getElementById('result').scrollIntoView({ behavior: 'smooth' })
+        }, 100)
+      } else {
+        throw new Error('API returned an unsuccessful status')
+      }
+    } catch (err) {
+      setError('Failed to get recommendation. Please check your inputs and try again.')
+      console.error('API Error:', err)
+    } finally {
       setIsLoading(false)
-      
-      // Scroll to result
-      document.getElementById('result').scrollIntoView({ behavior: 'smooth' })
-    }, 1500)
+    }
   }
 
   return (
@@ -188,11 +218,27 @@ export default function CropRecommendation() {
         </button>
       </form>
 
+      {error && (
+        <div id="result" className={`${styles.result} ${styles.resultError}`}>
+          <FontAwesomeIcon icon={faExclamationTriangle} className={styles.errorIcon} />
+          <div className={styles.resultTitle}>Error</div>
+          <p>{error}</p>
+        </div>
+      )}
+
       {result && (
         <div id="result" className={`${styles.result} ${styles.resultSuccess}`}>
           <div className={styles.resultTitle}>Recommended Crop:</div>
           <div className={styles.resultCrop}>{result.crop}</div>
           <p>{result.message}</p>
+          <div className={styles.confidenceBar}>
+            <div 
+              className={styles.confidenceFill} 
+              style={{ width: `${result.confidence * 100}%` }}
+            >
+              Confidence: {Math.round(result.confidence * 100)}%
+            </div>
+          </div>
         </div>
       )}
     </div>
