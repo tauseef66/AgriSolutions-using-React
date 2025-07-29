@@ -97,9 +97,10 @@ export default function YieldPrediction() {
       const response = await fetch('http://localhost:5000/api/predict', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
           // Add authorization header if needed
-          // 'Authorization': `Bearer ${currentUser.token}`
+                    // 'Authorization': `Bearer ${currentUser.token}` 
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ODhjNmMwNTMxOGRjNjg1NjViNmUxNyIsImlhdCI6MTc1MzgxMzU0OSwiZXhwIjoxNzUzODE3MTQ5fQ.0V8IPd_mDKV3rMS6_cUshwxToPLu0fJSNfHdvNa8YXs`
         },
         body: JSON.stringify(requestBody)
       });

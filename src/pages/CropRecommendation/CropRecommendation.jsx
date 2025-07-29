@@ -41,6 +41,7 @@ export default function CropRecommendation() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ODhjNmMwNTMxOGRjNjg1NjViNmUxNyIsImlhdCI6MTc1MzgwODI5MiwiZXhwIjoxNzUzODExODkyfQ.Kpc4VlM8uWxW7h-XEri8SYl2gFptKvF4odkWrA0-EU0'
         },
         body: JSON.stringify({
           N: Number(formData.N),
